@@ -165,7 +165,7 @@
   resolved "https://registry.yarnpkg.com/@capacitor/geolocation/-/geolocation-5.0.8.tgz#d319752123f9d97c2e463f41adb28b0070dd5b25"
   integrity sha512-ikyAKtgTfBeyZVAhDQ0Cbor6yJ18QM+xstlwRIiTRKMZDHty7rhCB0nTLpZvCGe1RQh7JLInUuKX2mPWaNELUQ==
 
-"@cosmicds/vue-toolkit@^0.4.2":
+"@cosmicds/vue-toolkit@~0.4.1":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@cosmicds/vue-toolkit/-/vue-toolkit-0.4.2.tgz#9e45a38b0089408f7fce94563f869b7101850a5c"
   integrity sha512-GnonCPyvc3uJ3J6pWvuFto5gqhy36wvg0gv01lAel7FfTwJFlb6g1nbfFRR/zFTQzQBUmSlssUzSCHB5WlMziA==

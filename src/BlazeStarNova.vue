@@ -221,7 +221,11 @@
           style="align-self: center;"
         />
         <div style="flex-grow:1;"></div>
-        <credit-logos v-if="!smAndDown && !isTourPlaying" style="margin:1em;" logo-size="25px"/>
+        <credit-logos
+          v-if="!smAndDown && !isTourPlaying"
+          :default-logos="['cosmicds', 'wwt', 'sciact', 'nasa']"
+          style="margin:1em;"
+          logo-size="25px"/>
       </div>
     
 
