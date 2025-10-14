@@ -1,6 +1,6 @@
 <template>
   <v-dialog :style="cssVars" class="bottom-sheet" id="text-bottom-sheet" hide-overlay persistent no-click-animation
-  absolute width="100%" :scrim="false" location="bottom" v-model="showNovaSheet"
+  absolute width="100%" :scrim="false" location="bottom" v-model="showNovaSheet" :retain-focus="retainFocus"
   transition="dialog-bottom-transition">
     <v-card id="bottom-sheet-card" height="100%">
       <font-awesome-icon id="close-text-icon" class="control-icon" icon="times" size="lg"
@@ -76,6 +76,7 @@ export interface Props {
   touchscreen?: any;
   showBlazeOverlay: boolean;
   showAlphaOverlay: boolean;
+  retainFocus: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(),{

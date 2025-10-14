@@ -1,6 +1,6 @@
 import Vue, { createApp, type Plugin } from "vue";
 
-import { FundingAcknowledgement, IconButton, CreditLogos, LocationSelector } from "@cosmicds/vue-toolkit";
+import { FundingAcknowledgement, IconButton, CreditLogos, LocationSelector, UserExperience } from "@cosmicds/vue-toolkit";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import BlazeStarNova from "./BlazeStarNova.vue";
 
@@ -98,6 +98,7 @@ createApp(BlazeStarNova, {
   .component('time-display', TimeDisplay)
   .component('date-time-picker', DateTimePicker)
   .component('focus-trap', FocusTrap)
+  .component('user-experience', UserExperience)
 
   // Mount
   .mount("#app");

@@ -1,7 +1,7 @@
 {
   "version": "0.0.0",
   "dependencies": {
-    "@cosmicds/vue-toolkit": "~0.4.1",
+    "@cosmicds/vue-toolkit": "~0.6.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/vue-fontawesome": "^3.0.5",
@@ -13,6 +13,7 @@
     "focus-trap-vue": "^4.0.3",
     "pinia": "^2.1.7",
     "tz-lookup": "^6.1.25",
+    "uuid": "^13.0.0",
     "vue": "^3.4.15",
     "vuetify": "^3.4.11",
     "webpack-plugin-vuetify": "^2.0.0"
