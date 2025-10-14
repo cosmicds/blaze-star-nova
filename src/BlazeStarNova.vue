@@ -268,18 +268,52 @@
           toggleAlpha();
         }"
        />
-     
 
+       <v-container>
+         <v-expand-transition>
+           <user-experience
+             v-show="showRating"
+             :question="question"
+             icon-size="3x"
+             @dismiss="(_rating: UserExperienceRating | null, _comments: string | null) => {
+               showRating = false;
+             }"
+             @rating="(rating: UserExperienceRating | null) => {
+               currentRating = rating;
+               updateUserExperienceInfo(currentRating, currentComments);
+             }"
+             @finish="(rating: UserExperienceRating | null, comments: string | null) => {
+               currentRating = rating;
+               currentComments = comments;
+               updateUserExperienceInfo(currentRating, currentComments)
+               showRating = false;
+             }"
+           >
+             <template #footer>
+               <v-btn
+                 class="privacy-button"
+                 color="#BDBDBD"
+                 href="https://www.cfa.harvard.edu/privacy-statement"
+                 target="_blank"
+                 rel="noopener noreferrer"
+               >
+               Privacy Policy
+               </v-btn>
+             </template>
+           </user-experience>
+           </v-expand-transition>
+         </v-container>
     </div>
   </v-app>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { v4 } from "uuid";
 import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
 import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
-import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
+import { API_BASE_URL, BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg, UserExperienceRating } from "@cosmicds/vue-toolkit";
 import { useDisplay} from 'vuetify';
 
 import { throttle } from './debounce';
@@ -301,6 +335,11 @@ export interface MainComponentProps {
 const TYCHO_ISET_NAME = "Tycho (Synthetic, Optical)";
 const USNOB_ISET_NAME = "USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)";
 
+const UUID_KEY = "blaze-star-nova-uuid" as const;
+const STORY_RATING_URL = `${API_BASE_URL}/blaze-star-nova/user-experience`;
+const maybeUUID = window.localStorage.getItem(UUID_KEY);
+const uuid = maybeUUID ?? v4();
+
 const store = engineStore();
 const { isTourPlaying } = storeToRefs(store);
 
@@ -317,6 +356,13 @@ const touchscreen = supportsTouchscreen();
 const { smAndDown, width, height } = useDisplay();
 
 const aspectRatio = computed(() => width.value / height.value);
+
+const question = Math.random() > 0.5 ? 
+  "Does this spark your curiosity?" :
+  "Are you learning something new?";
+const currentRating = ref<UserExperienceRating | null>(null);
+const currentComments = ref<string | null>(null);
+const showRating = ref(false);
 
 
 const props = withDefaults(defineProps<MainComponentProps>(), {
@@ -521,6 +567,8 @@ onMounted(() => {
       });
     }, 50);
   }).then(()=>{updateCrbBelowHorizon(store.currentTime);});
+
+  ratingDisplaySetup();
 });
 
 const ready = computed(() => layersLoaded.value && positionSet.value);
@@ -711,6 +759,47 @@ function toggleAlpha() {
     setTimeout(() => {
       showAlphaOverlay.value = false;
     }, 5000);
+  });
+}
+
+async function ratingDisplaySetup() {
+  const existsResponse = await fetch(`${STORY_RATING_URL}/${uuid}`, {
+    method: "GET",
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { "Authorization": process.env.VUE_APP_CDS_API_KEY ?? "" }
+  });
+  // NB: If we want to ask multiple questions, this logic can be adjusted
+  const existsContent = await existsResponse.json();
+  const exists = existsResponse.status === 200 && existsContent.ratings?.length > 0;
+  if (exists) {
+    return;
+  }
+  setTimeout(() => {
+    showRating.value = true; 
+  }, 40_000);
+}
+
+function updateUserExperienceInfo(rating: UserExperienceRating | null, comments: string | null) {
+  const body: Record<string, unknown> = {
+    uuid,
+    question,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    story_name: "planet-parade",
+  };
+  if (rating) {
+    body.rating = rating;
+  }
+  if (comments) {
+    body.comments = comments;
+  }
+  fetch(STORY_RATING_URL, {
+    method: "PUT",
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      "Authorization": process.env.VUE_APP_CDS_API_KEY ?? "",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
   });
 }
 
@@ -1183,5 +1272,51 @@ video {
 
 .bsn__time .td__timezone_tz {
   font-size: calc(0.85 * var(--default-font-size));
+}
+
+.rating-root {
+  position: absolute !important;
+  right: 5px;
+  bottom: 0;
+  padding: 5px;
+  width: fit-content !important;
+  // left: 50%;
+  // transform: translateX(-50%);
+  gap: 0 !important;
+  border: solid 1px #EFEFEF !important;
+  border-radius: 10px !important;
+  background-color: #222222 !important;
+  opacity: 0.95 !important;
+  z-index: 20000;
+  .rating-title {
+    color: #EFEFEF;
+    font-size: var(--default-font-size);
+  }
+  .rating-icon-row {
+    
+    padding: 0px;
+    .svg-inline--fa {
+      height: 30px;
+    }
+  }
+  .comments-box {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .v-card-text {
+    padding-bottom: 0;
+  }
+  .v-card-actions {
+    padding: 0;
+  }
+  .privacy-button {
+    font-size: 10px;
+    position: absolute;
+    left: 5px;
+  }
+  .v-btn.bg-success {
+    position: absolute;
+    right: 5px;
+  }
 }
 </style>
