@@ -253,6 +253,7 @@
         @toggle-alpha="() => {
           toggleAlpha();
         }"
+        :retain-focus="!showRating"
        />
 
       <!-- This dialog contains the informational content that is displayed when the info icon is clicked -->
