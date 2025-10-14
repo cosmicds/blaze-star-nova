@@ -13,6 +13,7 @@
     "focus-trap-vue": "^4.0.3",
     "pinia": "^2.1.7",
     "tz-lookup": "^6.1.25",
+    "uuid": "^13.0.0",
     "vue": "^3.4.15",
     "vuetify": "^3.4.11",
     "webpack-plugin-vuetify": "^2.0.0"
