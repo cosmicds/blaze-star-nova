@@ -113,9 +113,9 @@
       </div>
 
       <!-- Date Picker -->
-       <div id="empty-space">
-       </div>
-       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying, 'pc-widescreen': aspectRatio > 1.5}">    
+      <div id="empty-space">
+      </div>
+      <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying, 'pc-widescreen': aspectRatio > 1.5}">    
         <icon-button
           @activate="() => playPauseTour()"
           :fa-icon="isTourPlaying ? 'stop' : 'play'"
@@ -170,11 +170,11 @@
           @click="selectedDate = todayAt9pm()"
           :style="{color: buttonColor}"
         ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
-       </div>
-       
-       
-       
-       
+      </div>
+
+
+
+
       
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
@@ -254,7 +254,7 @@
           toggleAlpha();
         }"
         :retain-focus="!showRating"
-       />
+      />
 
       <!-- This dialog contains the informational content that is displayed when the info icon is clicked -->
       <bottom-use-sheet
@@ -268,42 +268,42 @@
         @toggle-alpha="() => {
           toggleAlpha();
         }"
-       />
+      />
 
-       <v-container>
-         <v-expand-transition>
-           <user-experience
-             v-show="showRating"
-             :question="question"
-             icon-size="3x"
-             @dismiss="(_rating: UserExperienceRating | null, _comments: string | null) => {
-               showRating = false;
-             }"
-             @rating="(rating: UserExperienceRating | null) => {
-               currentRating = rating;
-               updateUserExperienceInfo(currentRating, currentComments);
-             }"
-             @finish="(rating: UserExperienceRating | null, comments: string | null) => {
-               currentRating = rating;
-               currentComments = comments;
-               updateUserExperienceInfo(currentRating, currentComments)
-               showRating = false;
-             }"
-           >
-             <template #footer>
-               <v-btn
-                 class="privacy-button"
-                 color="#BDBDBD"
-                 href="https://www.cfa.harvard.edu/privacy-statement"
-                 target="_blank"
-                 rel="noopener noreferrer"
-               >
-               Privacy Policy
-               </v-btn>
-             </template>
-           </user-experience>
-           </v-expand-transition>
-         </v-container>
+      <v-container>
+        <v-expand-transition>
+          <user-experience
+            v-show="showRating"
+            :question="question"
+            icon-size="3x"
+            @dismiss="(_rating: UserExperienceRating | null, _comments: string | null) => {
+              showRating = false;
+            }"
+            @rating="(rating: UserExperienceRating | null) => {
+              currentRating = rating;
+              updateUserExperienceInfo(currentRating, currentComments);
+            }"
+            @finish="(rating: UserExperienceRating | null, comments: string | null) => {
+              currentRating = rating;
+              currentComments = comments;
+              updateUserExperienceInfo(currentRating, currentComments)
+              showRating = false;
+            }"
+          >
+            <template #footer>
+              <v-btn
+                class="privacy-button"
+                color="#BDBDBD"
+                href="https://www.cfa.harvard.edu/privacy-statement"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+              Privacy Policy
+              </v-btn>
+            </template>
+          </user-experience>
+          </v-expand-transition>
+        </v-container>
     </div>
   </v-app>
 </template>
