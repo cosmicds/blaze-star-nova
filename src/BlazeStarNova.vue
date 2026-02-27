@@ -113,9 +113,9 @@
       </div>
 
       <!-- Date Picker -->
-       <div id="empty-space">
-       </div>
-       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying, 'pc-widescreen': aspectRatio > 1.5}">    
+      <div id="empty-space">
+      </div>
+      <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying, 'pc-widescreen': aspectRatio > 1.5}">    
         <icon-button
           @activate="() => playPauseTour()"
           :fa-icon="isTourPlaying ? 'stop' : 'play'"
@@ -170,11 +170,11 @@
           @click="selectedDate = todayAt9pm()"
           :style="{color: buttonColor}"
         ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
-       </div>
-       
-       
-       
-       
+      </div>
+
+
+
+
       
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
@@ -254,7 +254,7 @@
           toggleAlpha();
         }"
         :retain-focus="!showRating"
-       />
+      />
 
       <!-- This dialog contains the informational content that is displayed when the info icon is clicked -->
       <bottom-use-sheet
@@ -268,42 +268,56 @@
         @toggle-alpha="() => {
           toggleAlpha();
         }"
-       />
+      />
 
-       <v-container>
-         <v-expand-transition>
-           <user-experience
-             v-show="showRating"
-             :question="question"
-             icon-size="3x"
-             @dismiss="(_rating: UserExperienceRating | null, _comments: string | null) => {
-               showRating = false;
-             }"
-             @rating="(rating: UserExperienceRating | null) => {
-               currentRating = rating;
-               updateUserExperienceInfo(currentRating, currentComments);
-             }"
-             @finish="(rating: UserExperienceRating | null, comments: string | null) => {
-               currentRating = rating;
-               currentComments = comments;
-               updateUserExperienceInfo(currentRating, currentComments)
-               showRating = false;
-             }"
-           >
-             <template #footer>
-               <v-btn
-                 class="privacy-button"
-                 color="#BDBDBD"
-                 href="https://www.cfa.harvard.edu/privacy-statement"
-                 target="_blank"
-                 rel="noopener noreferrer"
-               >
-               Privacy Policy
-               </v-btn>
-             </template>
-           </user-experience>
-           </v-expand-transition>
-         </v-container>
+      <v-container>
+        <v-expand-transition>
+          <user-experience
+            v-show="showRating"
+            :question="question"
+            icon-size="3x"
+            @dismiss="(_rating: UserExperienceRating | null, _comments: string | null) => {
+              showRating = false;
+            }"
+            @rating="(rating: UserExperienceRating | null) => {
+              currentRating = rating;
+              updateUserExperienceInfo(currentRating, currentComments);
+            }"
+            @finish="(rating: UserExperienceRating | null, comments: string | null) => {
+              currentRating = rating;
+              currentComments = comments;
+              updateUserExperienceInfo(currentRating, currentComments)
+              showRating = false;
+            }"
+          >
+              <template #footer>
+                <div id="user-experience-footer" class="mt-4">
+                  <v-btn
+                    class="rating-opt-put"
+                    color="#BDBDBD"
+                    size="small"
+                    variant="text"
+                    @click="onOptOutClicked"
+                  >
+                  Don't show again
+                  </v-btn>
+                  <v-btn
+                    class="privacy-button"
+                    color="#BDBDBD"
+                    size="small"
+                    @click="showPrivacyPolicy = true"
+                    @keyup.enter="showPrivacyPolicy = true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                  What is this?
+                  </v-btn>
+                </div>
+              </template>
+            </user-experience>
+          </v-expand-transition>
+          <cds-privacy-policy v-model="showPrivacyPolicy" />
+        </v-container>
     </div>
   </v-app>
 </template>
@@ -340,6 +354,14 @@ const UUID_KEY = "blaze-star-nova-uuid" as const;
 const STORY_RATING_URL = `${API_BASE_URL}/blaze-star-nova/user-experience`;
 const maybeUUID = window.localStorage.getItem(UUID_KEY);
 const uuid = maybeUUID ?? v4();
+let ratingOptedOut = window.localStorage.getItem("blaze-star-nova-rating-optout")?.toLowerCase() === "true";
+const showPrivacyPolicy = ref(false);
+function onOptOutClicked() {
+  showRating.value = false;
+  ratingOptedOut = true;
+  window.localStorage.setItem("blaze-star-nova-rating-optout", "true");
+}
+
 
 const store = engineStore();
 const { isTourPlaying } = storeToRefs(store);
@@ -764,6 +786,10 @@ function toggleAlpha() {
 }
 
 async function ratingDisplaySetup() {
+  if (ratingOptedOut) {
+    console.log("opted out of ratings");
+    return;
+  }
   const existsResponse = await fetch(`${STORY_RATING_URL}/${uuid}`, {
     method: "GET",
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -777,7 +803,7 @@ async function ratingDisplaySetup() {
   }
   setTimeout(() => {
     showRating.value = true; 
-  }, 40_000);
+  }, 1_000);
 }
 
 function updateUserExperienceInfo(rating: UserExperienceRating | null, comments: string | null) {
@@ -1291,7 +1317,9 @@ video {
   z-index: 20000;
   .rating-title {
     color: #EFEFEF;
-    font-size: var(--default-font-size);
+    font-size: calc(0.7*var(--default-font-size));
+    padding-left:0;
+    text-align: left;
   }
   .rating-icon-row {
     
@@ -1310,14 +1338,14 @@ video {
   .v-card-actions {
     padding: 0;
   }
-  .privacy-button {
-    font-size: 10px;
-    position: absolute;
-    left: 5px;
+  #user-experience-footer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    gap: 5px;
   }
-  .v-btn.bg-success {
-    position: absolute;
-    right: 5px;
-  }
+
+
 }
 </style>

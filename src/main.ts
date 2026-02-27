@@ -20,6 +20,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import GeolocationButton from "./GeolocationButton.vue";
 import TimeDisplay from "./TimeDisplay.vue";
 import DateTimePicker from "./DateTimePicker.vue";
+import CDSPrivacyPolicy from "./CDSPrivacyPolicy.vue";
 
 import { WWTComponent, wwtPinia } from "@wwtelescope/engine-pinia";
 
@@ -99,6 +100,7 @@ createApp(BlazeStarNova, {
   .component('date-time-picker', DateTimePicker)
   .component('focus-trap', FocusTrap)
   .component('user-experience', UserExperience)
+  .component('cds-privacy-policy', CDSPrivacyPolicy)
 
   // Mount
   .mount("#app");
