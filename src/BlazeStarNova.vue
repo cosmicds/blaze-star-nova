@@ -355,7 +355,7 @@ const STORY_RATING_URL = `${API_BASE_URL}/blaze-star-nova/user-experience`;
 const maybeUUID = window.localStorage.getItem(UUID_KEY);
 const uuid = maybeUUID ?? v4();
 let ratingOptedOut = window.localStorage.getItem("blaze-star-nova-rating-optout")?.toLowerCase() === "true";
-const showPrivacyPolicy = ref(true);
+const showPrivacyPolicy = ref(false);
 function onOptOutClicked() {
   showRating.value = false;
   ratingOptedOut = true;
@@ -803,7 +803,7 @@ async function ratingDisplaySetup() {
   }
   setTimeout(() => {
     showRating.value = true; 
-  }, 40_000);
+  }, 1_000);
 }
 
 function updateUserExperienceInfo(rating: UserExperienceRating | null, comments: string | null) {
